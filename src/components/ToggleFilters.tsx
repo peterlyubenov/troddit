@@ -4,9 +4,13 @@ import { BsX, BsCheck } from "react-icons/bs";
 import { useMainContext } from "../MainContext";
 import React, { useEffect, useState } from "react";
 import useRefresh from "../hooks/useRefresh";
-const ToggleFilters = ({ filter, withSubtext = false, quickToggle = false}) => {
+const ToggleFilters = ({
+  filter,
+  withSubtext = false,
+  quickToggle = false,
+}) => {
   const context: any = useMainContext();
-  const {invalidateKey} = useRefresh(); 
+  const { invalidateKey } = useRefresh();
   const { theme, resolvedTheme } = useTheme();
   const [checked, setChecked] = useState(false);
   const [title, setTitle] = useState("filter toggle");
@@ -36,7 +40,7 @@ const ToggleFilters = ({ filter, withSubtext = false, quickToggle = false}) => {
         break;
       case "videos":
         setSubtext(
-          "Filter or show videos (or gifs). Only applies to native videos."
+          "Filter or show videos (or gifs). Only applies to native videos.",
         );
         f = "vidFilter";
         break;
@@ -69,32 +73,28 @@ const ToggleFilters = ({ filter, withSubtext = false, quickToggle = false}) => {
         filter === "links"
           ? "link posts"
           : filter === "self"
-          ? "self posts"
-          : filter === "read"
-          ? "read posts"
-          : filter === "portrait" || filter === "landscape"
-          ? `${filter} images/videos`
-          : filter
-      } `
+            ? "self posts"
+            : filter === "read"
+              ? "read posts"
+              : filter === "portrait" || filter === "landscape"
+                ? `${filter} images/videos`
+                : filter
+      } `,
     );
     setFilterName(f);
-
- 
   }, [filter]);
 
-  const [toggled,setToggled] = useState(false);
+  const [toggled, setToggled] = useState(false);
 
   useEffect(() => {
-    if (filterName){
+    if (filterName) {
       context[filterName] ? setChecked(true) : setChecked(false);
-      if (quickToggle && toggled){
-        context.applyFilters(); 
-        invalidateKey(["feed"], true); 
+      if (quickToggle && toggled) {
+        context.applyFilters();
+        invalidateKey(["feed"], true);
       }
     }
-  
-  }, [context?.[filterName]])
-  
+  }, [context?.[filterName]]);
 
   const [onHandleColor, setOnHandleColor] = useState<string>();
   const [offHandleColor, setOffHandleColor] = useState<string>();
@@ -114,15 +114,11 @@ const ToggleFilters = ({ filter, withSubtext = false, quickToggle = false}) => {
       .getPropertyValue("--toggleHandleColor")
       .trim();
 
-    setOnHandleColor(() => toggleHandleColor
-    );
-    setOffHandleColor(() => toggleHandleColor
-    );
+    setOnHandleColor(() => toggleHandleColor);
+    setOffHandleColor(() => toggleHandleColor);
     setOnColor(() => toggleColor);
-    setOffColor(() =>toggleColor
-    );
+    setOffColor(() => toggleColor);
   }, [updateTheme]);
-
 
   if (!mounted) return null;
 
@@ -140,7 +136,10 @@ const ToggleFilters = ({ filter, withSubtext = false, quickToggle = false}) => {
           )}
         </span>
         <ReactSwitch
-          onChange={() => {setToggled(true);context.toggleFilter(filter);}}
+          onChange={() => {
+            setToggled(true);
+            context.toggleFilter(filter);
+          }}
           checked={checked}
           checkedHandleIcon={<div></div>}
           checkedIcon={
