@@ -1,81 +1,107 @@
 # Changelog
 
+## v0.20.1-Peshka
+
+- Modified the settings menu a bit
+- Added an option to disable full screen media overlay, defaulting to comment view on click
+
 ## v0.20.0
 
 ### Changes
+
 - Allow signed out use within rate limits
 
 ## v0.19.1
 
 ### Changes
+
 - Handle 429 Too Many Requests error from Reddit
+
 ### Fixes
+
 - Seen posts now logged from feed scrolling
 
 ## v0.19.0
+
 ### New
-- Reddit API use is now protected behind troddit+ authentication. This is in response to recent pricing changes made by Reddit. 
-  - Private instances are unaffected unless opted in. 
+
+- Reddit API use is now protected behind troddit+ authentication. This is in response to recent pricing changes made by Reddit.
+  - Private instances are unaffected unless opted in.
 - API use is now anonymously logged
 
 ## v0.18.0
+
 ### New
+
 - Troddit will now remember and resume your position in recent feeds
 - View duplicate discussions from thread overflow menu
 - Hold to preview media on small devices in media card mode
-  
+
 ### Fixes
+
 - Dual posts now display both media and selftext body everywhere except media and compact cards
 - Local custom feeds will no longer be reset
 
 ### Changes
+
 - The whole post body now scrolls when a thread is open
 - Appearance and behavior of selftexts changed
 - General scrolling performance was improved
 
 ## v0.17.5
+
 ### New
+
 - Now you can set the global default comment sort for threads
   - Find the "Default Comment Sort" option in the settings page.
+
 ### Fixes
+
 - Fix sometimes unordered image galleries
 - Fix some issues when fetching user posts.
 
 ## v0.17.4
 
 ### New
-- New settings: 
+
+- New settings:
   - Prefer Side-by-Side and Disable Side-by-Side toggles in the Layout section
-    - To prefer placing comments to to the side or disabling automatic side placement. 
+    - To prefer placing comments to to the side or disabling automatic side placement.
   - Auto collapse comments in Comments section
     - Automatically collapse recently collapsed, controversial, or hidden comments as displayed on Reddit. Enabled by default.
 
 ### Changes
+
 - The navigation bar no longer automatically hides on scrolling
   - This behavior can be re-enabled with the 'Hide NavBar' toggle in the Layout section of the settings page.
 - Search location changed on mobile
 - Minor style changes
-### Fixes
-- Fix miscellaneous issues with video playback
 
+### Fixes
+
+- Fix miscellaneous issues with video playback
 
 ## v0.17.3
 
 ### Changes
+
 - Changes to video player inner-workings
 - Minor video player visual updates on mobile
-- Now if a video cannot autoplay un-muted (for example, because of browser security restrictions) it will try to autoplay muted. 
+- Now if a video cannot autoplay un-muted (for example, because of browser security restrictions) it will try to autoplay muted.
 
 ### Fixes
+
 - Reddit video audio now works on iOS and other browsers previously unsupported
 - Video autoplay now works on iOS
 
 ## v0.17.2
 
 ### Changes
+
 - Galleries wrap around and images will fill available space
 
 ### Fixes
+
 - Fix some missing comment links
 - Fix videos in crossposts
 - Show initial feed loading state
@@ -83,9 +109,12 @@
 ## v0.17.1
 
 ### Changes
+
 - Search will now default to subreddit search when possible
 - Minor style changes to reader mode and comment votes
+
 ### Fixes
+
 - Prevent links to deleted users
 
 ## v0.17.0
