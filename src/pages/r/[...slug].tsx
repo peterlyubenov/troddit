@@ -1,25 +1,13 @@
-import { useRouter } from "next/router";
 import Link from "next/link";
 import Head from "next/head";
-import NavBar from "../../components/NavBar";
 import Feed from "../../components/Feed";
 import { useEffect, useState } from "react";
 import SubredditBanner from "../../components/SubredditBanner";
-import {
-  getWikiContent,
-  loadPost,
-  loadSubredditInfo,
-  loadSubreddits,
-} from "../../RedditAPI";
+import { getWikiContent } from "../../RedditAPI";
 import ParseBodyHTML from "../../components/ParseBodyHTML";
-import Collection from "../../components/collections/Collection";
 import PostModal from "../../components/PostModal";
 import LoginModal from "../../components/LoginModal";
 import React from "react";
-import useThread from "../../hooks/useThread";
-import { findMediaInfo } from "../../../lib/utils";
-import { getToken } from "next-auth/jwt";
-import { getSession } from "next-auth/react";
 import { useTAuth } from "../../PremiumAuthContext";
 const SubredditPage = ({ query, metaTags, post, postData }) => {
   const user = useTAuth();
@@ -30,7 +18,10 @@ const SubredditPage = ({ query, metaTags, post, postData }) => {
   const [postThread, setPostThread] = useState(false);
   const [withCommentContext, setWithCommentContext] = useState(false);
   useEffect(() => {
-    const getWiki = async (wikiquery: {wikiquery:string[];isPremium:boolean}) => {
+    const getWiki = async (wikiquery: {
+      wikiquery: string[];
+      isPremium: boolean;
+    }) => {
       const data = await getWikiContent(wikiquery);
       setWikiContent(data?.data?.content_html ?? "nothing found");
     };
@@ -44,7 +35,7 @@ const SubredditPage = ({ query, metaTags, post, postData }) => {
           .join("+")
           .split("%20")
           .join("+")
-          .split("+")
+          .split("+"),
       );
       if (query?.slug?.[1]?.toUpperCase() === "COMMENTS") {
         setPostThread(true);
@@ -54,7 +45,7 @@ const SubredditPage = ({ query, metaTags, post, postData }) => {
         setWikiMode(true);
         let wikiquery = query.slug;
         if (!wikiquery?.[2]) wikiquery[2] = "index";
-        getWiki({wikiquery, isPremium: user.premium?.isPremium ?? false});
+        getWiki({ wikiquery, isPremium: user.premium?.isPremium ?? false });
       }
     }
 

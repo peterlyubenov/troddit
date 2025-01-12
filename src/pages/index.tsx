@@ -1,16 +1,11 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import Head from "next/head";
 import Feed from "../components/Feed";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import { loadFront } from "../RedditAPI";
-import { getToken } from "next-auth/jwt";
 import React from "react";
-import Card1 from "../components/cards/Card1";
-import Modal from "../components/ui/Modal";
 import { useTAuth } from "../PremiumAuthContext";
 
-const index = ({ postData, user }) => {
+const IndexPage = ({ postData, user }) => {
   const { isLoaded, premium } = useTAuth();
   const [initialData, setInitialData] = useState({});
   const [ready, setReady] = useState(false);
@@ -18,21 +13,21 @@ const index = ({ postData, user }) => {
   const isloading = data.status === "loading";
   useEffect(() => {
     if (!isloading && isLoaded && premium) {
-      const parseCookie = (str) =>
+      const parseCookie = (str: string) =>
         str
           .split(";")
           .map((v) => v.split("="))
           .reduce((acc, v) => {
             acc[decodeURIComponent(v[0].trim())] = decodeURIComponent(
-              v[1].trim()
+              v[1].trim(),
             );
             return acc;
           }, {});
       const cookies = parseCookie(document.cookie);
-      //can't use initial ssr props if login mismatch or local subs changed
+      // can't use initial SSR props if login mismatch or local subs changed
       if (
-        (user !== (data?.data?.user?.name ?? "") ||
-          (cookies?.["localSubs"] && cookies?.["localSubs"] !== "false"))
+        user !== (data?.data?.user?.name ?? "") ||
+        (cookies?.["localSubs"] && cookies?.["localSubs"] !== "false")
       ) {
         setInitialData({});
       } else if (postData) {
@@ -43,14 +38,7 @@ const index = ({ postData, user }) => {
     return () => {
       setReady(false);
     };
-  }, [
-    postData,
-    isloading,
-    isLoaded,
-    premium,
-    user,
-    data?.data?.user?.name,
-  ]);
+  }, [postData, isloading, isLoaded, premium, user, data?.data?.user?.name]);
   return (
     <div className="overflow-x-hidden ">
       <Head>
@@ -65,22 +53,12 @@ const index = ({ postData, user }) => {
   );
 };
 
-export async function getStaticProps({ params }) {
-
-  // const data = await loadFront({
-  //   sort: "hot",
-  //   isPremium: true,
-  // });
-
+export async function getStaticProps() {
   return {
     props: {
-      // postData: JSON.stringify({ children: data?.children }),
       user: "",
     },
-    // Next.js will attempt to re-generate the page:
-    // - When a request comes in
-    // revalidate: 14400, // In seconds
   };
 }
 
-export default index;
+export default IndexPage;

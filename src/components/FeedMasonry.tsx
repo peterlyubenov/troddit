@@ -68,20 +68,20 @@ const FeedMasonry = ({ initItems, feed, curKey }: MyMasonicProps) => {
     context.cardStyle === "row1"
       ? 0
       : cols === 1
-      ? 8
-      : cols && cols > 1 && windowWidth < 640 //sm
-      ? cols === 2
         ? 8
-        : 0
-      : cols && cols > 3 && windowWidth < 1280 //xl
-      ? 4
-      : cols && cols > 3 && windowWidth > 1280 //xl
-      ? 8
-      : 8;
+        : cols && cols > 1 && windowWidth < 640 //sm
+          ? cols === 2
+            ? 8
+            : 0
+          : cols && cols > 3 && windowWidth < 1280 //xl
+            ? 4
+            : cols && cols > 3 && windowWidth > 1280 //xl
+              ? 8
+              : 8;
   const colWidth =
     context.cardStyle === "row1"
       ? width
-      : (width - (cols ?? 0 > 1 ? gutter * (cols ? cols : 1) : 0)) /
+      : (width - ((cols ?? 0 > 1) ? gutter * (cols ? cols : 1) : 0)) /
         (cols ? cols : 1);
   const positioner = usePositioner({
     width,
@@ -109,7 +109,7 @@ const FeedMasonry = ({ initItems, feed, curKey }: MyMasonicProps) => {
     },
     {
       isItemLoaded: (index, items) => !!items[index],
-    }
+    },
   );
 
   const [lastRoute, setLastRoute] = useState("");
@@ -157,7 +157,7 @@ const FeedMasonry = ({ initItems, feed, curKey }: MyMasonicProps) => {
   }, [router.asPath]);
 
   const { getGlobalData, setGlobalData } = useGlobalState(
-    curKey?.length > 1 ? ["lastScrollTop", curKey] : [""]
+    curKey?.length > 1 ? ["lastScrollTop", curKey] : [""],
   );
 
   const postClick = (a, b) => {
@@ -173,7 +173,7 @@ const FeedMasonry = ({ initItems, feed, curKey }: MyMasonicProps) => {
         const lastPostScroll = g?.get("lastScroll");
         const lastPost = lastPostClick ?? lastPostScroll;
         const lastPostIndex = flatPosts.findIndex(
-          (p) => lastPost && p?.data?.name === lastPost
+          (p) => lastPost && p?.data?.name === lastPost,
         );
         setScrolled(lastPostIndex);
         if (lastPostIndex > 0) {
@@ -205,7 +205,7 @@ const FeedMasonry = ({ initItems, feed, curKey }: MyMasonicProps) => {
       //console.log("setheight?", height);
       height && setHeight(postName, { height: height });
     },
-    [setHeight]
+    [setHeight],
   );
 
   const handleIntersectChange = useCallback(
@@ -218,14 +218,13 @@ const FeedMasonry = ({ initItems, feed, curKey }: MyMasonicProps) => {
       ) {
         setGlobalData("lastScroll", post?.name);
         setGlobalData("lastClick", undefined);
-        if(context?.autoSeen){
+        if (context?.autoSeen) {
           localSeen.setItem(post?.name, { time: new Date() });
-        } 
-          
+        }
       }
       //context.cardStyle === "row1" && setGlobalData("lastTop", window.scrollY);
     },
-    []
+    [],
   );
 
   const RenderCard = useCallback(
@@ -268,18 +267,18 @@ const FeedMasonry = ({ initItems, feed, curKey }: MyMasonicProps) => {
           ? (mediaWidth / post?.mediaInfo?.dimensions?.[0]) *
               post?.mediaInfo?.dimensions?.[1]
           : 0,
-        maxHeight
+        maxHeight,
       );
 
       if (post?.data?.mediaInfo?.isGallery) {
         const { tallest, widest, ratio, fImages } = findGreatestsImages(
           post.data.mediaInfo.gallery,
-          cols === 1 ? windowHeightToUse * 0.75 : windowHeightToUse * 1
+          cols === 1 ? windowHeightToUse * 0.75 : windowHeightToUse * 1,
         );
         if (cols === 1) {
           mediaHeight = Math.min(
             windowHeightToUse * 0.75,
-            ratio?.height * (width / ratio?.width)
+            ratio?.height * (width / ratio?.width),
           );
         } else {
           mediaHeight = tallest?.height * (width / widest?.width);
@@ -326,16 +325,18 @@ const FeedMasonry = ({ initItems, feed, curKey }: MyMasonicProps) => {
                       height: `${(mediaWidth * 16) / 9}px`,
                     }
                   : knownHeight && context.cardStyle !== "row1"
-                  ? {
-                      minHeight: `${knownHeight}px`,
-                    }
-                  : mediaHeight > 0 && context.cardStyle !== "row1" && !linkMode
-                  ? {
-                      minHeight: `${mediaHeight}px`,
-                    }
-                  : {
-                      minHeight: `${80}px`,
-                    }
+                    ? {
+                        minHeight: `${knownHeight}px`,
+                      }
+                    : mediaHeight > 0 &&
+                        context.cardStyle !== "row1" &&
+                        !linkMode
+                      ? {
+                          minHeight: `${mediaHeight}px`,
+                        }
+                      : {
+                          minHeight: `${80}px`,
+                        }
               }
             >
               <Post
@@ -368,7 +369,7 @@ const FeedMasonry = ({ initItems, feed, curKey }: MyMasonicProps) => {
       context?.compactLinkPics,
       context.disableEmbeds,
       context.embedsEverywhere,
-    ]
+    ],
   );
 
   const feedLoading =
@@ -379,7 +380,8 @@ const FeedMasonry = ({ initItems, feed, curKey }: MyMasonicProps) => {
       {!feed.isFetching &&
         !feed.hasNextPage &&
         feed.isFetched &&
-        !feed.error && flatPosts?.length > 0 && (
+        !feed.error &&
+        flatPosts?.length > 0 && (
           <div className="flex flex-row items-center justify-center my-6 text-sm font-light">
             <p>
               Loaded {flatPosts?.length} post

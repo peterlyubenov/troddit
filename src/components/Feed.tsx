@@ -13,15 +13,18 @@ import toast from "react-hot-toast";
 import ToastCustom from "./toast/ToastCustom";
 import FeedMasonry from "./FeedMasonry";
 
-const Feed = ({ initialData = {} as any }) => {
+interface FeedProps {
+  initialData: {};
+}
+
+const Feed = ({ initialData }: FeedProps) => {
   const { mode, subreddits } = useLocation();
   const { key, feed } = useFeed({
     initialPosts: initialData,
   });
-  const { invalidateAll, invalidateKey, refreshCurrent, fetchingCount } =
-    useRefresh();
+  const { invalidateAll, refreshCurrent } = useRefresh();
 
-  const context: any = useMainContext();
+  const context = useMainContext();
   const router = useRouter();
 
   useEffect(() => {
@@ -31,7 +34,7 @@ const Feed = ({ initialData = {} as any }) => {
     ) {
       router.replace(router.asPath, undefined, { shallow: true });
     }
-  }, []);
+  }, [router]);
 
   if (
     feed.error &&
@@ -56,7 +59,7 @@ const Feed = ({ initialData = {} as any }) => {
           actionLabel={"Search Instead?"}
         />
       ),
-      { position: "bottom-center", duration: Infinity, id: "not_found" }
+      { position: "bottom-center", duration: Infinity, id: "not_found" },
     );
   } else if (feed.error) {
     toast.custom(
@@ -74,7 +77,7 @@ const Feed = ({ initialData = {} as any }) => {
           <ErrMessage />
         </button>
       ),
-      { position: "bottom-center", duration: Infinity, id: "feed_error" }
+      { position: "bottom-center", duration: Infinity, id: "feed_error" },
     );
   } else {
     toast.remove("not_found");

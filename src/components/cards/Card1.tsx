@@ -514,8 +514,8 @@ const Card1 = ({
                               (post?.likes === true || post?.likes === 1
                                 ? " text-th-upvote "
                                 : post?.likes === false || post?.likes === -1
-                                ? " text-th-downvote "
-                                : "")
+                                  ? " text-th-downvote "
+                                  : "")
                             }
                           >
                             <span>{voteScore}</span>
@@ -553,8 +553,8 @@ const Card1 = ({
                               (post?.likes === true || post?.likes === 1
                                 ? " text-th-upvote "
                                 : post?.likes === false || post?.likes === -1
-                                ? " text-th-downvote "
-                                : "")
+                                  ? " text-th-downvote "
+                                  : "")
                             }
                           >
                             <span>{voteScore}</span>

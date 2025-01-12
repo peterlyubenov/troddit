@@ -38,10 +38,10 @@ const MediaWrapper = ({
     post?.over_18 && post?.spoiler
       ? setHideText("NSFW SPOILER")
       : post?.over_18
-      ? setHideText("NSFW")
-      : post?.spoiler
-      ? setHideText("SPOILER")
-      : setHideText("");
+        ? setHideText("NSFW")
+        : post?.spoiler
+          ? setHideText("SPOILER")
+          : setHideText("");
     return () => {
       //
     };
@@ -152,12 +152,11 @@ const MediaWrapper = ({
             className="mr-1"
             onClick={(e) => {
               e.stopPropagation();
-            }}>
-
+            }}
+          >
             <h2 className="font-semibold hover:underline text-th-text ">
               r/{postData?.subreddit ?? ""}
             </h2>
-
           </Link>
           <p>•</p>
           <Link
@@ -165,12 +164,11 @@ const MediaWrapper = ({
             title={`see u/${postData?.author}'s posts`}
             onClick={(e) => {
               e.stopPropagation();
-            }}>
-
+            }}
+          >
             <h2 className="ml-1 mr-1 hover:underline">
               u/{postData?.author ?? ""}
             </h2>
-
           </Link>
           <p>•</p>
           <p className="ml-1 ">

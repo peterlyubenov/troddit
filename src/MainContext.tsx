@@ -1,6 +1,7 @@
 import localForage from "localforage";
-import React, { useState, useContext, useEffect, useReducer } from "react";
+import React, { useState, useContext, useEffect, useCallback } from "react";
 import { useTAuth } from "./PremiumAuthContext";
+import { MainContextType, UserPostType } from "../types/MainContext.types";
 
 export const localRead = localForage.createInstance({ storeName: "readPosts" });
 export const localSeen = localForage.createInstance({ storeName: "seenPosts" });
@@ -15,7 +16,7 @@ export const userFilters = localForage.createInstance({
   storeName: "userFilters",
 });
 
-export const MainContext: any = React.createContext({});
+export const MainContext = React.createContext<Partial<MainContextType>>({});
 
 export const useMainContext = () => {
   return useContext(MainContext);
@@ -192,7 +193,7 @@ export const MainProvider = ({ children }) => {
   };
 
   //toggle for type of posts to show in saved screen
-  const [userPostType, setUserPostType] = useState("links");
+  const [userPostType, setUserPostType] = useState<UserPostType>("links");
   const toggleUserPostType = () => {
     setUserPostType((p) => {
       if (p === "links") return "comments";
@@ -212,7 +213,9 @@ export const MainProvider = ({ children }) => {
       return false;
     }
   };
-  const bulkAddReadPosts = (posts: { postId; numComments }[]) => {
+  const bulkAddReadPosts = (
+    posts: { postId: string; numComments: number }[],
+  ) => {
     setReadPosts((read) => {
       let now = new Date();
       let updatedRead = {};
@@ -277,18 +280,21 @@ export const MainProvider = ({ children }) => {
   //'img' filters also apply to reddit videos since those have known res as well..
   const [imgPortraitFilter, setImgPortraitFilter] = useState<boolean>();
   const [imgLandscapeFilter, setImgLandScapeFilter] = useState<boolean>();
-  const [imgResFilter, setImgResFilter] = useState(false);
-  const [imgResXFilter, setImgResXFilter] = useState(0);
-  const [imgResYFilter, setImgResYFilter] = useState(0);
-  const [imgResExactFilter, setImgResExactFilter] = useState(false);
+
+  // used to be state but don't seem to be used or updated
+  const imgResFilter = false;
+  const imgResXFilter = 0;
+  const imgResYFilter = 0;
+  const imgResExactFilter = false;
+  const scoreFilterNum = undefined;
+  const scoreGreater = true;
+
   const [scoreFilter, setScoreFilter] = useState(false);
-  const [scoreFilterNum, setScoreFilterNum] = useState();
-  const [scoreGreater, setScoreGreater] = useState(true);
 
   const [replyFocus, setReplyFocus] = useState(false);
   /*To keep subreddit/user filters responsive */
   const [updateFilters, setUpdateFilters] = useState(0);
-  const toggleFilter = (filter) => {
+  const toggleFilter = (filter: string) => {
     switch (filter) {
       case "seen":
         setSeenFilter((r) => !r);
@@ -382,24 +388,9 @@ export const MainProvider = ({ children }) => {
   };
 
   const [filtersApplied, setApplyFilters] = useState(0);
-  const applyFilters = (
-    filters = {
-      seenFilter,
-      readFilter,
-      imgFilter,
-      vidFilter,
-      selfFilter,
-      linkFilter,
-      imgPortraitFilter,
-      imgLandscapeFilter,
-    }
-  ) => {
-    //need filtersapplied number to be unique each time filters are applied to prevent shortening items array for Masonic when react-query updates stale feed
-    //positive will be used to determine if any filters are active
-
-    setApplyFilters((f) => {
-      //any filter on
-      const {
+  const applyFilters = useCallback(
+    (
+      filters = {
         seenFilter,
         readFilter,
         imgFilter,
@@ -408,24 +399,51 @@ export const MainProvider = ({ children }) => {
         linkFilter,
         imgPortraitFilter,
         imgLandscapeFilter,
-      } = filters;
-      if (
-        seenFilter === false ||
-        readFilter === false ||
-        imgFilter === false ||
-        vidFilter === false ||
-        selfFilter === false ||
-        // !galFilter &&
-        linkFilter === false ||
-        imgPortraitFilter === false ||
-        imgLandscapeFilter === false
-      ) {
-        return Math.abs(f) + 1;
-      }
-      return (Math.abs(f) + 1) * -1;
-    });
-    setProgressKey((p) => p + 1);
-  };
+      },
+    ) => {
+      //need filtersapplied number to be unique each time filters are applied to prevent shortening items array for Masonic when react-query updates stale feed
+      //positive will be used to determine if any filters are active
+
+      setApplyFilters((f) => {
+        //any filter on
+        const {
+          seenFilter,
+          readFilter,
+          imgFilter,
+          vidFilter,
+          selfFilter,
+          linkFilter,
+          imgPortraitFilter,
+          imgLandscapeFilter,
+        } = filters;
+        if (
+          seenFilter === false ||
+          readFilter === false ||
+          imgFilter === false ||
+          vidFilter === false ||
+          selfFilter === false ||
+          // !galFilter &&
+          linkFilter === false ||
+          imgPortraitFilter === false ||
+          imgLandscapeFilter === false
+        ) {
+          return Math.abs(f) + 1;
+        }
+        return (Math.abs(f) + 1) * -1;
+      });
+      setProgressKey((p) => p + 1);
+    },
+    [
+      imgFilter,
+      imgLandscapeFilter,
+      imgPortraitFilter,
+      linkFilter,
+      readFilter,
+      seenFilter,
+      selfFilter,
+      vidFilter,
+    ],
+  );
 
   const updateLikes = (i, like) => {
     if (posts?.[i]?.data) {
@@ -484,7 +502,7 @@ export const MainProvider = ({ children }) => {
   const favoriteLocalSub = async (makeFavorite, subname) => {
     if (makeFavorite === true) {
       let found = localFavoriteSubs.find(
-        (s) => s?.toUpperCase() === subname?.toUpperCase()
+        (s) => s?.toUpperCase() === subname?.toUpperCase(),
       );
       if (!found) {
         setLocalFavoriteSubs((p) => [...p, subname]);
@@ -492,7 +510,7 @@ export const MainProvider = ({ children }) => {
     } else {
       setLocalFavoriteSubs((p) => {
         let filtered = p.filter(
-          (s) => s?.toUpperCase() !== subname?.toUpperCase()
+          (s) => s?.toUpperCase() !== subname?.toUpperCase(),
         );
         if (!(filtered.length > 0)) {
           localForage.setItem("localFavoriteSubs", []);
@@ -523,7 +541,7 @@ export const MainProvider = ({ children }) => {
     cardStyle !== "row1" &&
       columnOverride === 1 &&
       setFastRefresh((f) => f + 1);
-  }, [wideUI]);
+  }, [wideUI, cardStyle, columnOverride]);
 
   const toggleSyncWideUI = () => {
     setSyncWideUI((w) => {
@@ -632,9 +650,8 @@ export const MainProvider = ({ children }) => {
       };
 
       const columnOverride = async () => {
-        let saved_columnOverride: number = await localForage.getItem(
-          "columnOverride"
-        );
+        let saved_columnOverride: number =
+          await localForage.getItem("columnOverride");
         if (saved_columnOverride !== null) {
           saved_columnOverride > 0
             ? setColumnOverride(saved_columnOverride)
@@ -643,7 +660,7 @@ export const MainProvider = ({ children }) => {
         } else {
           fallback = true;
           let local_columnOverride = parseInt(
-            localStorage.getItem("columnOverride")
+            localStorage.getItem("columnOverride"),
           );
           local_columnOverride > 0
             ? setColumnOverride(local_columnOverride)
@@ -666,22 +683,6 @@ export const MainProvider = ({ children }) => {
             : setSaveWideUI(true);
         }
       };
-
-      // const syncWideUI = async () => {
-      //   let saved_syncWideUI = await localForage.getItem("syncWideUI");
-      //   if (saved_syncWideUI !== null) {
-      //     saved_syncWideUI === false
-      //       ? setSyncWideUI(false)
-      //       : setSyncWideUI(true);
-      //     localStorage.removeItem("syncWideUI");
-      //   } else {
-      //     fallback = true;
-      //     let local_syncWideUI = localStorage.getItem("syncWideUI");
-      //     local_syncWideUI?.includes("false")
-      //       ? setSyncWideUI(false)
-      //       : setSyncWideUI(true);
-      //   }
-      // };
 
       const postWideUI = async () => {
         let saved_postWideUI = await localForage.getItem("postWideUI");
@@ -777,9 +778,8 @@ export const MainProvider = ({ children }) => {
         }
       };
       const loadImgPortraitFilter = async () => {
-        let saved_imgPortraitFilter = await localForage.getItem(
-          "imgPortraitFilter"
-        );
+        let saved_imgPortraitFilter =
+          await localForage.getItem("imgPortraitFilter");
         if (saved_imgPortraitFilter !== null) {
           if (saved_imgPortraitFilter === false) {
             filters.imgPortraitFilter = false;
@@ -802,9 +802,8 @@ export const MainProvider = ({ children }) => {
       };
 
       const loadImgLandscapeFilter = async () => {
-        let saved_imgLandscapeFilter = await localForage.getItem(
-          "imgLandscapeFilter"
-        );
+        let saved_imgLandscapeFilter =
+          await localForage.getItem("imgLandscapeFilter");
         if (saved_imgLandscapeFilter !== null) {
           if (saved_imgLandscapeFilter === false) {
             filters.imgLandscapeFilter = false;
@@ -914,7 +913,6 @@ export const MainProvider = ({ children }) => {
         }
       };
 
-      //new setting
       const loadSeenFilter = async () => {
         let saved = await localForage.getItem("seenFilter");
         if (saved === false) {
@@ -934,7 +932,7 @@ export const MainProvider = ({ children }) => {
       };
       const loadCollapseChildrenOnly = async () => {
         let saved_collapseChildrenOnly = await localForage.getItem(
-          "collapseChildrenOnly"
+          "collapseChildrenOnly",
         );
         saved_collapseChildrenOnly === true
           ? setCollapseChildrenOnly(true)
@@ -942,16 +940,15 @@ export const MainProvider = ({ children }) => {
       };
       const loadDefaultCollapseChildren = async () => {
         let saved_defaultCollapseChildren = await localForage.getItem(
-          "defaultCollapseChildren"
+          "defaultCollapseChildren",
         );
         saved_defaultCollapseChildren === true
           ? setDefaultCollapseChildren(true)
           : setDefaultCollapseChildren(false);
       };
       const loadShowUserIcons = async () => {
-        let saved_loadShowUserIcons = await localForage.getItem(
-          "showUserIcons"
-        );
+        let saved_loadShowUserIcons =
+          await localForage.getItem("showUserIcons");
         saved_loadShowUserIcons === false
           ? setShowUserIcons(false)
           : setShowUserIcons(true);
@@ -1033,7 +1030,7 @@ export const MainProvider = ({ children }) => {
       };
       const fastRefreshInterval = async () => {
         let saved = (await localForage.getItem(
-          "fastRefreshInterval"
+          "fastRefreshInterval",
         )) as number;
         if (typeof saved === "number" && saved >= 10 * 1000) {
           setFastRefreshInterval(saved);
@@ -1043,7 +1040,7 @@ export const MainProvider = ({ children }) => {
       };
       const slowRefreshInterval = async () => {
         let saved = (await localForage.getItem(
-          "slowRefreshInterval"
+          "slowRefreshInterval",
         )) as number;
         if (typeof saved === "number" && saved >= 10 * 1000) {
           setSlowRefreshInterval(saved);
@@ -1053,7 +1050,7 @@ export const MainProvider = ({ children }) => {
       };
       const defaultSortComments = async () => {
         let saved = (await localForage.getItem(
-          "defaultSortComments"
+          "defaultSortComments",
         )) as string;
         if (typeof saved === "string") {
           setDefaultSortComments(saved);
@@ -1071,7 +1068,7 @@ export const MainProvider = ({ children }) => {
       };
       const waitForVidInterval = async () => {
         let saved = (await localForage.getItem(
-          "waitForVidInterval"
+          "waitForVidInterval",
         )) as boolean;
         if (saved === false) {
           setWaitForVidInterval(false);
@@ -1162,7 +1159,6 @@ export const MainProvider = ({ children }) => {
       let audiohover = audioOnHover();
       let columnoverride = columnOverride();
       let savewideui = savedWideUI();
-      //let syncwideui = syncWideUI();
       let postwideui = postWideUI();
       let wideUI = loadWideUI();
       let cardstyle = loadCardStyle();
@@ -1204,7 +1200,6 @@ export const MainProvider = ({ children }) => {
         audiohover,
         columnoverride,
         savewideui,
-        //syncwideui,
         postwideui,
         wideUI,
         cardstyle,
@@ -1240,7 +1235,7 @@ export const MainProvider = ({ children }) => {
     };
 
     getSettings();
-  }, []);
+  }, [applyFilters]);
   useEffect(() => {
     if (autoCollapseComments !== undefined) {
       localForage.setItem("autoCollapseComments", autoCollapseComments);
@@ -1571,8 +1566,6 @@ export const MainProvider = ({ children }) => {
         updateLikes,
         updateSaves,
         updateHidden,
-        //forceRefresh,
-        //setForceRefresh,
         fastRefresh,
         setFastRefresh,
         ready,
