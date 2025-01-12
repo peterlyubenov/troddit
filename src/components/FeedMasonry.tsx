@@ -37,14 +37,14 @@ interface MyMasonicProps {
   >;
 }
 
-const FeedMasonry = ({ initItems, feed, curKey }: MyMasonicProps) => {
+const FeedMasonry = ({ feed, curKey }: MyMasonicProps) => {
   const [masonicKey, setMasonicKey] = useState(curKey);
   const [cols, setCols] = useState<number>();
   const [uniformMediaMode, setUniformMediaMode] = useState(false);
 
   const router = useRouter();
   // const { data: session, status } = useSession();
-  const context: any = useMainContext();
+  const context = useMainContext();
   const containerRef = React.useRef(null);
   const [windowWidth, windowHeight] = useWindowSize();
   const { flatPosts } = useFeedPosts({
@@ -394,6 +394,9 @@ const FeedMasonry = ({ initItems, feed, curKey }: MyMasonicProps) => {
     </>
   );
 
+  const useMediaMode =
+    (!context.disableOverlay && selectedPost?.nav?.toMedia) ?? false;
+
   return (
     <>
       {selectedPost && (
@@ -409,7 +412,7 @@ const FeedMasonry = ({ initItems, feed, curKey }: MyMasonicProps) => {
           postNum={selectedPost?.postNum}
           commentMode={selectedPost?.kind === "t1"}
           commentsDirect={selectedPost?.nav?.toComments}
-          mediaMode={selectedPost?.nav?.toMedia}
+          mediaMode={useMediaMode}
           curKey={curKey}
           fetchMore={feed.fetchNextPage}
           feedLoading={feed.isFetchingNextPage}

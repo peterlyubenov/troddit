@@ -5,6 +5,7 @@ import Toggles from "../../components/settings/Toggles";
 const MediaSettings = () => {
   const mediaToggles = [
     "disableEmbeds",
+    "disableOverlay",
     "preferEmbeds",
     "embedsEverywhere",
     "autoplay",

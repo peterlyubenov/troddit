@@ -77,6 +77,7 @@ export const MainProvider = ({ children }) => {
   };
   const [preferSideBySide, setPreferSideBySide] = useState<boolean>();
   const [disableSideBySide, setDisableSideBySide] = useState<boolean>();
+  const [disableOverlay, setDisableOverlay] = useState<boolean>();
   const togglePreferSideBySide = () => {
     setPreferSideBySide((p) => {
       if (!p) setDisableSideBySide(false);
@@ -163,6 +164,7 @@ export const MainProvider = ({ children }) => {
   const toggleAutoSeen = () => {
     setAutoSeen((r) => !r);
   };
+  const toggleDisableOverlay = () => setDisableOverlay((prev) => !prev);
   const toggleDisableEmbeds = () => {
     setDisableEmbeds((d) => {
       if (!d) {
@@ -989,6 +991,10 @@ export const MainProvider = ({ children }) => {
         let saved = await localForage.getItem("autoSeen");
         saved === false ? setAutoSeen(false) : setAutoSeen(true);
       };
+      const loadDisableOverlay = async () => {
+        const disableOverlay = await localForage.getItem("disableOverlay");
+        setDisableOverlay(disableOverlay !== false);
+      };
       const loadDisableEmbeds = async () => {
         let saved = await localForage.getItem("disableEmbeds");
         saved === true ? setDisableEmbeds(true) : setDisableEmbeds(false);
@@ -1141,6 +1147,7 @@ export const MainProvider = ({ children }) => {
       let autohidenav = autoHideNav();
       let compactlinkpics = compactLinkPics();
       let autoseen = loadAutoSeen();
+      let disableOverlayPromise = loadDisableOverlay();
       let autorefreshfeed = autoRefreshFeed();
       let autorefreshcomments = autoRefreshComments();
       let asktoupdatefeed = askToUpdateFeed();
@@ -1221,6 +1228,7 @@ export const MainProvider = ({ children }) => {
         preferembeds,
         loadembedseverywhere,
         autohidenav,
+        disableOverlayPromise,
       ]);
 
       applyFilters(filters);
@@ -1261,6 +1269,11 @@ export const MainProvider = ({ children }) => {
       localForage.setItem("uniformHeights", uniformHeights);
     }
   }, [uniformHeights]);
+  useEffect(() => {
+    if (disableOverlay !== undefined) {
+      localForage.setItem("disableOverlay", disableOverlay);
+    }
+  }, [disableOverlay]);
 
   useEffect(() => {
     if (waitForVidInterval !== undefined) {
@@ -1676,6 +1689,8 @@ export const MainProvider = ({ children }) => {
         togglePreferSideBySide,
         autoCollapseComments,
         toggleAutoCollapseComments,
+        disableOverlay,
+        toggleDisableOverlay,
       }}
     >
       {children}

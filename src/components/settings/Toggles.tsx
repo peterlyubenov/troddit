@@ -53,7 +53,8 @@ interface ToggleProps {
     | "autoHideNav"
     | "preferSideBySide"
     | "disableSideBySide"
-    | "autoCollapseComments";
+    | "autoCollapseComments"
+    | "disableOverlay";
 
   label?: string;
   externalStyles?: string;
@@ -70,7 +71,7 @@ const Toggles = ({
 }: ToggleProps) => {
   const { theme, setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  const context: any = useMainContext();
+  const context = useMainContext();
 
   const [onHandleColor, setOnHandleColor] = useState<string>();
   const [offHandleColor, setOffHandleColor] = useState<string>();
@@ -113,22 +114,22 @@ const Toggles = ({
         ? resolvedTheme === "dark"
           ? "#991B1B"
           : "#EF4444"
-        : toggleHandleColor
+        : toggleHandleColor,
     );
     setOffHandleColor(() =>
       setting == "theme"
         ? "#F59E0B"
         : setting == "nsfw"
-        ? "#4ADE80"
-        : toggleHandleColor
+          ? "#4ADE80"
+          : toggleHandleColor,
     );
     setOnColor(() => toggleColor);
     setOffColor(() =>
       setting == "theme"
         ? "#EA580C"
         : setting == "nsfw"
-        ? "#059669"
-        : toggleColor
+          ? "#059669"
+          : toggleColor,
     );
   }, [updateTheme]);
 
@@ -147,7 +148,7 @@ const Toggles = ({
           setSwitchSubtext(
             context.nsfw
               ? "18+ posts shown as normal"
-              : "18+ posts are blurred and search results hidden"
+              : "18+ posts are blurred and search results hidden",
           );
         setTitle("blur 18+ posts");
         setCheckedIcon(<VscEye />);
@@ -157,7 +158,7 @@ const Toggles = ({
         !label && setSwitchLabel("Autoplay");
         !subtext &&
           setSwitchSubtext(
-            "Autoplay videos and gifs when they enter into view"
+            "Autoplay videos and gifs when they enter into view",
           );
         setTitle("autoplay videos & gifs");
         setCheckedIcon(<BsPlay />);
@@ -174,7 +175,7 @@ const Toggles = ({
         !label && setSwitchLabel("Audio");
         !subtext &&
           setSwitchSubtext(
-            "Auto unmute audio on mouse hover or post open. Will also unmute audio when a post scrolls into view in single column mode."
+            "Auto unmute audio on mouse hover or post open. Will also unmute audio when a post scrolls into view in single column mode.",
           );
         setTitle("unmute on post open or video hover");
         setCheckedIcon(<BsVolumeUp />);
@@ -185,7 +186,7 @@ const Toggles = ({
         !label && setSwitchLabel("Wide UI");
         !subtext &&
           setSwitchSubtext(
-            "Enable or disable wide feed UI in single column mode."
+            "Enable or disable wide feed UI in single column mode.",
           );
         setTitle("toggle wide ui in single column mode");
         setCheckedIcon(<CgArrowsShrinkH />);
@@ -195,7 +196,7 @@ const Toggles = ({
         !label && setSwitchLabel("Sync Width");
         !subtext &&
           setSwitchSubtext(
-            "Syncs Wide UI changes with Post Width. If Post Width is narrow posts will not automatically display comments to the side."
+            "Syncs Wide UI changes with Post Width. If Post Width is narrow posts will not automatically display comments to the side.",
           );
         break;
       case "postWideUI":
@@ -206,7 +207,7 @@ const Toggles = ({
               context.syncWideUI
                 ? "'Sync Width' must be disabled to toggle this. "
                 : "Narrow or wide post UI. Comments will not be displayed to the side with narrow width."
-            }`
+            }`,
           );
         setCheckedIcon(<CgArrowsShrinkH />);
         setUncheckedIcon(<CgArrowsMergeAltH />);
@@ -215,7 +216,7 @@ const Toggles = ({
         !label && setSwitchLabel("Ribbon Collapse");
         !subtext &&
           setSwitchSubtext(
-            "Enable to only collapse comments when the comment ribbon is clicked."
+            "Enable to only collapse comments when the comment ribbon is clicked.",
           );
         break;
       case "collapseChildrenOnly":
@@ -227,7 +228,7 @@ const Toggles = ({
         !label && setSwitchLabel("Collapse Children");
         !subtext &&
           setSwitchSubtext(
-            "Enable to collapse all children comments initially. Requires alternate collapse mode to be enabled."
+            "Enable to collapse all children comments initially. Requires alternate collapse mode to be enabled.",
           );
         break;
       case "showUserIcons":
@@ -246,7 +247,7 @@ const Toggles = ({
         !label && setSwitchLabel("Link Thumbnails");
         !subtext &&
           setSwitchSubtext(
-            "When toggled on previews for link posts will be shown as thumbnails instead of full images in Original and Compact Cards. "
+            "When toggled on previews for link posts will be shown as thumbnails instead of full images in Original and Compact Cards. ",
           );
         break;
       case "showUserFlairs":
@@ -257,7 +258,7 @@ const Toggles = ({
         !label && setSwitchLabel("Expanded Pane");
         !subtext &&
           setSwitchSubtext(
-            "Automatically shows the subreddit dropdown pane as expanded instead of collapsed"
+            "Automatically shows the subreddit dropdown pane as expanded instead of collapsed",
           );
         break;
       case "infiniteLoading":
@@ -272,35 +273,35 @@ const Toggles = ({
         !label && setSwitchLabel("Auto Read");
         !subtext &&
           setSwitchSubtext(
-            "Automatically mark posts as read when their thread is closed"
+            "Automatically mark posts as read when their thread is closed",
           );
         break;
       case "autoSeen":
         !label && setSwitchLabel("Auto Seen");
         !subtext &&
           setSwitchSubtext(
-            "Attempt to automatically mark posts as seen when they are scrolled off the page"
+            "Attempt to automatically mark posts as seen when they are scrolled off the page",
           );
         break;
       case "disableEmbeds":
         !label && setSwitchLabel("Disable Embeds");
         !subtext &&
           setSwitchSubtext(
-            "Will not load any embeds unless you explicitly switch to embed"
+            "Will not load any embeds unless you explicitly switch to embed",
           );
         break;
       case "preferEmbeds":
         !label && setSwitchLabel("Prefer Embeds");
         !subtext &&
           setSwitchSubtext(
-            "Prefer embeds instead of native video. Native video options may not work (autoplay, hoverplay, audio, etc.)"
+            "Prefer embeds instead of native video. Native video options may not work (autoplay, hoverplay, audio, etc.)",
           );
         break;
       case "embedsEverywhere":
         !label && setSwitchLabel("Embed Everywhere");
         !subtext &&
           setSwitchSubtext(
-            "By default embeds will only show in single column view or in a post thread. Enable this to show embeds in multi-column mode. Note, this is disabled by default for better performance."
+            "By default embeds will only show in single column view or in a post thread. Enable this to show embeds in multi-column mode. Note, this is disabled by default for better performance.",
           );
         break;
       case "userPostType":
@@ -315,35 +316,35 @@ const Toggles = ({
         !label && setSwitchLabel("Monitor Feed");
         !subtext &&
           setSwitchSubtext(
-            "Enable to automatically check for new posts periodically"
+            "Enable to automatically check for new posts periodically",
           );
         break;
       case "autoRefreshComments":
         !label && setSwitchLabel("Monitor Comments");
         !subtext &&
           setSwitchSubtext(
-            "Enable to check for new comments when a thread is opened or window refocused"
+            "Enable to check for new comments when a thread is opened or window refocused",
           );
         break;
       case "askToUpdateFeed":
         !label && setSwitchLabel("Ask to Update");
         !subtext &&
           setSwitchSubtext(
-            "Enable to be prompted before updating feed with new posts. If disabled feed will update automatically with no prompt. "
+            "Enable to be prompted before updating feed with new posts. If disabled feed will update automatically with no prompt. ",
           );
         break;
       case "refreshOnFocus":
         !label && setSwitchLabel("Check on Focus");
         !subtext &&
           setSwitchSubtext(
-            "Enable to check for new posts when the window is refocused"
+            "Enable to check for new posts when the window is refocused",
           );
         break;
       case "uniformHeights":
         !label && setSwitchLabel("Uniform Heights");
         !subtext &&
           setSwitchSubtext(
-            "When using media card sets all cards to uniform heights."
+            "When using media card sets all cards to uniform heights.",
           );
         break;
       case "autoHideNav":
@@ -355,7 +356,7 @@ const Toggles = ({
         !label && setSwitchLabel("Prefer Side-by-Side");
         !subtext &&
           setSwitchSubtext(
-            "Always put comments to the side when a post is opened if the window is large enough, post width set to wide, and the post contains content."
+            "Always put comments to the side when a post is opened if the window is large enough, post width set to wide, and the post contains content.",
           );
         break;
 
@@ -363,14 +364,23 @@ const Toggles = ({
         !label && setSwitchLabel("Disable Side-by-Side");
         !subtext &&
           setSwitchSubtext(
-            "Disable automatic side-by-side. By default, if the post media content is in portrait orientation and the window is large enough comments will by placed beside the post content. "
+            "Disable automatic side-by-side. By default, if the post media content is in portrait orientation and the window is large enough comments will by placed beside the post content. ",
           );
         break;
       case "autoCollapseComments":
         !label && setSwitchLabel("Auto Collapse Comments");
-        !subtext && setSwitchSubtext("Automatically collapse previously collapsed and downvoted or hidden comments as displayed on Reddit");
+        !subtext &&
+          setSwitchSubtext(
+            "Automatically collapse previously collapsed and downvoted or hidden comments as displayed on Reddit",
+          );
         break;
-
+      case "disableOverlay":
+        !label && setSwitchLabel("Disable Full-screen overlay");
+        !subtext &&
+          setSwitchSubtext(
+            "When clicking on an image, open the comments instead of a full-screen image view",
+          );
+        break;
       default:
         break;
     }
@@ -389,107 +399,110 @@ const Toggles = ({
         setTheme(
           resolvedTheme === "dark"
             ? "light"
-            : resolvedTheme === "light" && "dark"
+            : resolvedTheme === "light" && "dark",
         );
         break;
       case "nsfw":
-        context.toggleNSFW();
+        context.toggleNSFW?.();
         break;
       case "autoplay":
-        context.toggleAutoplay();
+        context.toggleAutoplay?.();
         break;
       case "hoverplay":
-        context.toggleHoverPlay();
+        context.toggleHoverPlay?.();
         break;
       case "audioOnHover":
-        context.toggleAudioOnHover();
+        context.toggleAudioOnHover?.();
         break;
       case "compactLinkPics":
-        context.toggleCompactLinkPics();
+        context.toggleCompactLinkPics?.();
         break;
       case "wideUI":
-        context.toggleWideUI();
+        context.toggleWideUI?.();
         break;
       case "syncWideUI":
-        context.toggleSyncWideUI();
+        context.toggleSyncWideUI?.();
         break;
       case "postWideUI":
-        context.togglePostWideUI();
+        context.togglePostWideUI?.();
         break;
       case "ribbonCollapseOnly":
-        context.toggleRibbonCollapseOnly();
+        context.toggleRibbonCollapseOnly?.();
         break;
       case "collapseChildrenOnly":
-        context.toggleCollapseChildrenOnly();
+        context.toggleCollapseChildrenOnly?.();
         break;
       case "defaultCollapseChildren":
-        context.toggleDefaultCollapseChildren();
+        context.toggleDefaultCollapseChildren?.();
         break;
       case "showUserIcons":
-        context.toggleShowUserIcons();
+        context.toggleShowUserIcons?.();
         break;
       case "showAwardings":
-        context.toggleShowAwardings();
+        context.toggleShowAwardings?.();
         break;
       case "showFlairs":
-        context.toggleShowFlairs();
+        context.toggleShowFlairs?.();
         break;
       case "showUserFlairs":
-        context.toggleShowUserFlairs();
+        context.toggleShowUserFlairs?.();
         break;
       case "expandedSubPane":
-        context.toggleExpandedSubPane();
+        context.toggleExpandedSubPane?.();
         break;
       case "infiniteLoading":
-        context.toggleInfiniteLoading();
+        context.toggleInfiniteLoading?.();
         break;
       case "dimRead":
-        context.toggleDimRead();
+        context.toggleDimRead?.();
         break;
       case "autoRead":
-        context.toggleAutoRead();
+        context.toggleAutoRead?.();
         break;
       case "autoSeen":
-        context.toggleAutoSeen();
+        context.toggleAutoSeen?.();
         break;
       case "disableEmbeds":
-        context.toggleDisableEmbeds();
+        context.toggleDisableEmbeds?.();
         break;
       case "preferEmbeds":
-        context.togglePreferEmbeds();
+        context.togglePreferEmbeds?.();
         break;
       case "embedsEverywhere":
-        context.toggleEmbedsEverywhere();
+        context.toggleEmbedsEverywhere?.();
         break;
       case "userPostType":
-        context.toggleUserPostType();
+        context.toggleUserPostType?.();
         break;
       case "autoRefreshFeed":
-        context.setAutoRefreshFeed((f) => !f);
+        context.setAutoRefreshFeed?.((f) => !f);
         break;
       case "askToUpdateFeed":
-        context.setAskToUpdateFeed((f) => !f);
+        context.setAskToUpdateFeed?.((f) => !f);
         break;
       case "refreshOnFocus":
-        context.setRefreshOnFocus((f) => !f);
+        context.setRefreshOnFocus?.((f) => !f);
         break;
       case "autoRefreshComments":
-        context.setAutoRefreshComments((f) => !f);
+        context.setAutoRefreshComments?.((f) => !f);
         break;
       case "uniformHeights":
-        context.setUniformHeights((f) => !f);
+        context.setUniformHeights?.((f) => !f);
         break;
       case "autoHideNav":
-        context.toggleAutoHideNav();
+        context.toggleAutoHideNav?.();
         break;
       case "preferSideBySide":
-        context.togglePreferSideBySide();
+        context.togglePreferSideBySide?.();
         break;
       case "disableSideBySide":
-        context.toggleDisableSideBySide();
+        context.toggleDisableSideBySide?.();
         break;
       case "autoCollapseComments":
-        context.toggleAutoCollapseComments();
+        context.toggleAutoCollapseComments?.();
+        break;
+      case "disableOverlay":
+        context.toggleDisableOverlay?.();
         break;
       default:
         break;

@@ -107,6 +107,8 @@ export interface MainContextType {
 
   collapseChildrenOnly: boolean | undefined;
   toggleCollapseChildrenOnly: () => void;
+  disableOverlay: boolean | undefined;
+  toggleDisableOverlay: () => void;
   defaultCollapseChildren: boolean | undefined;
   toggleDefaultCollapseChildren: () => void;
   showUserIcons: boolean | undefined;

@@ -86,7 +86,6 @@ const Row1 = ({
     }
   }, [post?.score]);
 
-
   return (
     <>
       <div
@@ -367,8 +366,8 @@ const Row1 = ({
                     (post?.likes === true || post?.likes === 1
                       ? " text-th-upvote "
                       : post?.likes === false || post?.likes === -1
-                      ? " text-th-downvote "
-                      : "")
+                        ? " text-th-downvote "
+                        : "")
                   }
                 >
                   {voteScore}

@@ -61,7 +61,7 @@ const Post = ({
         router.push(
           "",
           `/u/${router?.query?.slug?.[0]}/${post.data.permalink}${queryParams}`,
-          { shallow: true }
+          { shallow: true },
         );
       } else if (router.pathname?.includes("/u/")) {
         if (
@@ -73,7 +73,7 @@ const Post = ({
             `/u/${router.query?.slug?.[0]}/m/${router.query.slug[2]}${post.data.permalink}${queryParams}`,
             {
               shallow: true,
-            }
+            },
           );
         } else {
           router.push(
@@ -81,13 +81,13 @@ const Post = ({
             `/u/${post?.data.author}/${post.data.permalink}${queryParams}`,
             {
               shallow: true,
-            }
+            },
           );
         }
       } else {
-        router.push("", `${post?.data.permalink}${queryParams}`, {
-          shallow: true,
-        });
+        // router.push("", `${post?.data.permalink}${queryParams}`, {
+        //   shallow: true,
+        // });
       }
     } else {
       window.open(`${post?.data.permalink}`, "_blank");
@@ -104,7 +104,6 @@ const Post = ({
 
   return (
     <div ref={postCardRef} className={""}>
-
       {/* Click wrapper */}
       <div
         className={"select-none"}
@@ -149,7 +148,6 @@ const Post = ({
             mediaDimensions={mediaDimensions}
             checkCardHeight={checkCardHeight}
             // newPost={post?.newPost}
-
           />
         ) : (
           <Card1
@@ -167,7 +165,6 @@ const Post = ({
             mediaDimensions={mediaDimensions}
             checkCardHeight={checkCardHeight}
             // newPost={post?.newPost}
-
           />
         )}
       </div>
